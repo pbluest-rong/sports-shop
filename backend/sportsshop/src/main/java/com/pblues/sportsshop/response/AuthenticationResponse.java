@@ -1,0 +1,20 @@
+package com.pblues.sportsshop.response;
+
+import com.pblues.sportsshop.constant.Role;
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+@Builder
+public class AuthenticationResponse {
+    private String accessToken;
+    private String refreshToken;
+    private String email;
+    private String fullName;
+    private Boolean gender;
+    private String phone;
+    private LocalDate dob;
+    private Role role;
+}
