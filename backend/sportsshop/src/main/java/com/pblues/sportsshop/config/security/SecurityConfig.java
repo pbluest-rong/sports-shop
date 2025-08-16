@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/orders/momo/ipn-handler").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(session ->

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Data
@@ -14,6 +15,6 @@ import java.util.Map;
 public class Variant {
     private String sku;
     private Map<String, Object> attrs; // {"size": 40, "color": "red"}
-    private long price;
+    private BigDecimal price;
     private int stock;
 }
