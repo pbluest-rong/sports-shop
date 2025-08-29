@@ -1,4 +1,4 @@
-package com.pblues.sportsshop.request;
+package com.pblues.sportsshop.dto.request;
 
 import lombok.Data;
 

@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
@@ -19,8 +21,8 @@ import java.time.LocalDateTime;
 public class Category {
     @Id
     private ObjectId id;
-
     private String name;
+    @Indexed(unique = true)
     private String slug;
     private ObjectId parentId;
     private String icon;

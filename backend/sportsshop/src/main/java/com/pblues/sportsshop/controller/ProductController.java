@@ -1,10 +1,9 @@
 package com.pblues.sportsshop.controller;
 
 import com.pblues.sportsshop.constant.SortBy;
-import com.pblues.sportsshop.model.Product;
-import com.pblues.sportsshop.response.ApiResponse;
-import com.pblues.sportsshop.response.PageResponse;
-import com.pblues.sportsshop.response.ProductResponse;
+import com.pblues.sportsshop.dto.response.ApiResponse;
+import com.pblues.sportsshop.dto.response.PageResponse;
+import com.pblues.sportsshop.dto.response.ProductResponse;
 import com.pblues.sportsshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

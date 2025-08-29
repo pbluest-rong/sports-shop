@@ -1,7 +1,6 @@
-package com.pblues.sportsshop.response;
+package com.pblues.sportsshop.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

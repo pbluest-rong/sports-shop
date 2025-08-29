@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -13,8 +14,11 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class Variant {
+    @Field("id")
+    private String id;
     private String sku;
-    private Map<String, Object> attrs; // {"size": 40, "color": "red"}
-    private BigDecimal price;
-    private int stock;
+    private Map<String, Object> attributes;
+    @Field("images")
+    private List<String> images;
+    private int displayOrder;
 }

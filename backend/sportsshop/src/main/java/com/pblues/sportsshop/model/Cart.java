@@ -1,30 +1,27 @@
 package com.pblues.sportsshop.model;
 
-import jakarta.persistence.*;
+import com.pblues.sportsshop.model.subdocument.CartItem;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
+@Document(collection = "carts")
 @NoArgsConstructor
-@Getter
-@Setter
-@Entity(name = "carts")
+@AllArgsConstructor
+@Data
+@Builder
 public class Cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private BigDecimal totalAmount = BigDecimal.ZERO;
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ObjectId id;
+    @Indexed(unique = true)
+    private Long userId;
     private Set<CartItem> items = new HashSet<>();
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }

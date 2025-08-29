@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -24,23 +25,29 @@ import java.util.Map;
 public class Product {
     @Id
     private ObjectId id;
-
-    private String name;
+    @Indexed(unique = true)
     private String slug;
-    private String brand;
-
-    private ObjectId categoryId;
-
-    private List<String> images;
+    private String title;
     private String description;
+    private String brand;
+    private ProductStatus status;
+    private int sold;
+    private ObjectId categoryId;
 
     private Map<String, List<String>> attributes;
 
     private List<Variant> variants;
+
     private Rating rating;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public enum ProductStatus {
+        ACTIVE,
+        INACTIVE,
+        DISCONTINUED,
+    }
 }

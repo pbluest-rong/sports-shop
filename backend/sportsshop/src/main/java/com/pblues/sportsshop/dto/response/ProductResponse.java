@@ -1,4 +1,4 @@
-package com.pblues.sportsshop.response;
+package com.pblues.sportsshop.dto.response;
 
 import com.pblues.sportsshop.model.subdocument.Rating;
 import com.pblues.sportsshop.model.subdocument.Variant;
@@ -15,14 +15,14 @@ import java.util.Map;
 @Builder
 public class ProductResponse {
     private String id;
-    private String name;
+    private String title;
     private String slug;
     private String brand;
     private String categoryId;
-    private List<String> images;
+    private String mainImage;
     private String description;
     private Map<String, List<String>> attributes;
-    private List<Variant> variants;
+    private List<VariantResponse> variants;
     private Rating rating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

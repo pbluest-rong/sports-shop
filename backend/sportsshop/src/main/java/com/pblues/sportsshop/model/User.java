@@ -32,7 +32,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
 
     private String fullName;
@@ -43,10 +45,14 @@ public class User implements UserDetails {
     private boolean locked;
     @Enumerated(EnumType.STRING)
 
+    @Column(nullable = false)
     private Role role;
 
     private Boolean acceptedMarketing = false;
     private LocalDateTime acceptedMarketingAt;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Address defaultAddress;
 
     @CreatedDate
     @Column(updatable = false)

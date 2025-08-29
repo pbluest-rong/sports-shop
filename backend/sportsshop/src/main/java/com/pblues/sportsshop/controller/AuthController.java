@@ -1,11 +1,11 @@
 package com.pblues.sportsshop.controller;
 
 import com.pblues.sportsshop.exception.OTPExceededLimitException;
-import com.pblues.sportsshop.request.AuthenticationRequest;
-import com.pblues.sportsshop.request.ResetPasswordRequest;
-import com.pblues.sportsshop.request.SignupRequest;
-import com.pblues.sportsshop.response.ApiResponse;
-import com.pblues.sportsshop.response.AuthenticationResponse;
+import com.pblues.sportsshop.dto.request.AuthenticationRequest;
+import com.pblues.sportsshop.dto.request.ResetPasswordRequest;
+import com.pblues.sportsshop.dto.request.SignupRequest;
+import com.pblues.sportsshop.dto.response.ApiResponse;
+import com.pblues.sportsshop.dto.response.AuthenticationResponse;
 import com.pblues.sportsshop.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

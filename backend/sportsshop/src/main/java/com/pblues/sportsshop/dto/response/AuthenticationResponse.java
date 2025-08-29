@@ -1,4 +1,4 @@
-package com.pblues.sportsshop.response;
+package com.pblues.sportsshop.dto.response;
 
 import com.pblues.sportsshop.constant.Role;
 import lombok.Builder;

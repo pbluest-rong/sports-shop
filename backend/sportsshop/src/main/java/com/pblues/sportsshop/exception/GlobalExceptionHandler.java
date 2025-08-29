@@ -1,6 +1,6 @@
 package com.pblues.sportsshop.exception;
 
-import com.pblues.sportsshop.response.ApiResponse;
+import com.pblues.sportsshop.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -47,5 +47,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleTokenInvalidException(InvalidTokenException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
     }
-
+    @ExceptionHandler(PriceChangedException.class)
+    public ResponseEntity<ApiResponse> handlePriceChangedException(PriceChangedException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(e.getMessage()));
+    }
 }
