@@ -2,6 +2,7 @@ package com.pblues.sportsshop.service;
 
 import com.pblues.sportsshop.exception.ResourceNotFoundException;
 import com.pblues.sportsshop.model.Cart;
+import com.pblues.sportsshop.model.Inventory;
 import com.pblues.sportsshop.model.subdocument.CartItem;
 import com.pblues.sportsshop.model.Product;
 import com.pblues.sportsshop.model.User;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
+    private final InventoryService inventoryService;
 
     @Override
     public void addItem(Authentication auth, AddCartItemRequest request) {
@@ -35,9 +37,12 @@ public class CartServiceImpl implements CartService {
 
         User user = (User) auth.getPrincipal();
 
-        Product product = productRepository.findById(new ObjectId(request.getProductId())).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        Product product = productRepository.findById(new ObjectId(request.getProductId()))
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(request.getSku())).findFirst().orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
+
+        Inventory inventory = inventoryService.getInventoryByVariant(product.getId(), variant.getId());
 
         // Tìm cart của user, nếu chưa có thì tạo mới
         Cart cart = cartRepository.findByUserId(user.getId()).orElseGet(() -> {
@@ -47,21 +52,22 @@ public class CartServiceImpl implements CartService {
         });
 
         int quantity = request.getQuantity();
-//        BigDecimal unitPrice = variant.getPrice();
-        BigDecimal unitPrice = new BigDecimal(0);
 
         // Kiểm tra item đã tồn tại chưa
-        Optional<CartItem> existingItemOpt = cart.getItems().stream().filter(i -> i.getProductId().equals(request.getProductId()) && i.getSku().equals(request.getSku())).findFirst();
+        Optional<CartItem> existingItemOpt = cart.getItems().stream()
+                .filter(i -> i.getProductId().equals(request.getProductId()) && i.getSku().equals(request.getSku()))
+                .findFirst();
 
         if (existingItemOpt.isPresent()) {
             CartItem existingItem = existingItemOpt.get();
             int itemQuantity = existingItem.getQuantity() + quantity;
-//            if (itemQuantity > variant.getAvailableStock())
-//                throw new ResourceNotFoundException("Quantity exceeds available stock");
+            if (itemQuantity > inventory.getAvailableStock())
+                throw new ResourceNotFoundException("Quantity exceeds available stock");
             existingItem.setQuantity(itemQuantity);
+            cart.getItems().add(existingItem);
         } else {
-//            if (quantity > variant.getAvailableStock())
-//                throw new ResourceNotFoundException("Quantity exceeds available stock");
+            if (quantity > inventory.getQuantity())
+                throw new ResourceNotFoundException("Quantity exceeds available stock");
 
             CartItem cartItem = new CartItem();
             cartItem.setProductId(request.getProductId());
@@ -69,7 +75,6 @@ public class CartServiceImpl implements CartService {
             cartItem.setQuantity(quantity);
             cart.getItems().add(cartItem);
         }
-
         cartRepository.save(cart);
     }
 
@@ -84,8 +89,17 @@ public class CartServiceImpl implements CartService {
 
             Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(item.getSku())).findFirst().orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
 
-            BigDecimal unitPrice = new BigDecimal(0);
-            return CartItemResponse.builder().quantity(item.getQuantity()).unitPrice(unitPrice).totalPrice(unitPrice.multiply(new BigDecimal(item.getQuantity()))).productId(item.getProductId()).sku(item.getSku()).imageUrl(product.getVariants().get(0).getImages().get(0)).variant(variant).build();
+            Inventory inventory = inventoryService.getInventoryByVariant(product.getId(), variant.getId());
+
+            return CartItemResponse.builder()
+                    .id(item.getId())
+                    .quantity(item.getQuantity())
+                    .unitPrice(inventory.getPrice())
+                    .totalPrice(inventory.getPrice().multiply(new BigDecimal(item.getQuantity())))
+                    .productId(item.getProductId())
+                    .sku(item.getSku())
+                    .imageUrl(variant.getImages().isEmpty()?null:variant.getImages().get(0))
+                    .variant(variant).build();
         }).collect(Collectors.toSet());
 
         CartResponse cartResponse = new CartResponse();

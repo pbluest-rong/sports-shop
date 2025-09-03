@@ -20,7 +20,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/checkout")
-    public ResponseEntity<ApiResponse> checkout(Authentication auth, OrderRequest request) {
+    public ResponseEntity<ApiResponse> checkout(Authentication auth, @RequestBody OrderRequest request) {
         OrderCreationResponse response = orderService.checkout(auth, request);
         return ResponseEntity.ok().body(ApiResponse.success("success", response));
     }

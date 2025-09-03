@@ -1,5 +1,6 @@
 package com.pblues.sportsshop.controller;
 
+import com.pblues.sportsshop.dto.request.AddressRequest;
 import com.pblues.sportsshop.model.Address;
 import com.pblues.sportsshop.dto.response.ApiResponse;
 import com.pblues.sportsshop.service.AddressService;
@@ -18,14 +19,15 @@ public class AccountController {
 
     @PostMapping("addresses")
     public ResponseEntity<Address> addAddress(Authentication auth,
-                                              @RequestBody Address address, @RequestParam(defaultValue = "false", required = false) boolean defaultAddress) {
+                                              @RequestBody AddressRequest address,
+                                              @RequestParam(defaultValue = "false", required = false) boolean defaultAddress) {
         return ResponseEntity.ok(addressService.addAddress(auth, address, defaultAddress));
     }
 
     @PutMapping("addresses/{addressId}")
     public ResponseEntity<Address> updateAddress(Authentication auth,
                                                  @PathVariable Long addressId,
-                                                 @RequestBody Address address) {
+                                                 @RequestBody AddressRequest address) {
         return ResponseEntity.ok(addressService.updateAddress(auth, addressId, address));
     }
 

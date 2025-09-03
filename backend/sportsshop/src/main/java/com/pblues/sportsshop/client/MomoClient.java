@@ -1,4 +1,4 @@
-package com.pblues.sportsshop.service.payment.momo;
+package com.pblues.sportsshop.client;
 
 import com.pblues.sportsshop.dto.request.CreatePaymentRequest;
 import com.pblues.sportsshop.dto.response.CreatePaymentResponse;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "momo", url = "${momo.end-point}")
-public interface MomoApi {
+public interface MomoClient {
     @PostMapping("/create")
     CreatePaymentResponse createMomoQR(@RequestBody CreatePaymentRequest createMomoRequest);
 }

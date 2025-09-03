@@ -1,74 +1,74 @@
 [
   {
-    "_id": "64f1d2f77bcf86cd79943901",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943901" },
     "name": "Quần áo bóng đá",
     "slug": "quan-ao-bong-da",
     "parentId": null,
     "icon": "⚽",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943902",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943902" },
     "name": "Gym & Yoga",
     "slug": "gym-yoga",
     "parentId": null,
     "icon": "🏋️",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943903",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943903" },
     "name": "Giày chạy bộ",
     "slug": "giay-chay-bo",
     "parentId": null,
     "icon": "👟",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943904",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943904" },
     "name": "Quần áo thể thao",
     "slug": "quan-ao-the-thao",
     "parentId": null,
     "icon": "🎽",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943905",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943905" },
     "name": "Pickleball",
     "slug": "pickleball",
     "parentId": null,
     "icon": "🏓",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943906",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943906" },
     "name": "Quần áo bóng chuyền",
     "slug": "quan-ao-bong-chuyen",
     "parentId": null,
     "icon": "🏐",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943907",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943907" },
     "name": "Bóng rổ",
     "slug": "bong-ro",
     "parentId": null,
     "icon": "🏀",
-    "createdAt": {"$date": "2024-01-01T00:00:00Z"}
+    "createdAt": { "$date": "2024-01-01T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943908",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943908" },
     "name": "Đồ bơi",
     "slug": "do-boi",
     "parentId": null,
     "icon": "🏊",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   },
   {
-    "_id": "64f1d2f77bcf86cd79943909",
+    "_id": { "$oid": "64f1d2f77bcf86cd79943909" },
     "name": "Bóng bàn",
     "slug": "bong-ban",
     "parentId": null,
     "icon": "🏓",
-    "createdAt": "2025-08-26T00:00:00Z"
+    "createdAt": { "$date": "2025-08-26T00:00:00Z" }
   }
 ]

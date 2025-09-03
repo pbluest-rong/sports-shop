@@ -31,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductCustomRepository productCustomRepository;
     private final CategoryRepository categoryRepository;
     private final InventoryService inventoryService;
+    private final ProductSearchService productSearchService;
 
     @Override
     public PageResponse<ProductResponse> getProductsByCategorySlug(String categorySlug, int page, int size) {
@@ -83,6 +84,11 @@ public class ProductServiceImpl implements ProductService {
         );
 
         return mapProductsToDTO(products);
+    }
+
+    @Override
+    public PageResponse<ProductResponse> vectorSearch(String query, int page, int size) {
+        return mapProductsToDTO(productSearchService.vectorSearch(query, page, size));
     }
 
     private PageResponse<ProductResponse> mapProductsToDTO(Page<Product> products) {

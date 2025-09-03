@@ -51,4 +51,12 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductBySlug(@PathVariable("slug") String slug) {
         return ResponseEntity.ok().body(ApiResponse.success("success", productService.getProductBySlug(slug)));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse> search(@RequestParam String query,
+                                              @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                              @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+        PageResponse<ProductResponse> response = productService.vectorSearch(query, page, size);
+        return ResponseEntity.ok().body(ApiResponse.success("success", response));
+    }
 }

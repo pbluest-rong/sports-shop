@@ -1,5 +1,6 @@
 package com.pblues.sportsshop.service;
 
+import com.pblues.sportsshop.dto.request.AddressRequest;
 import com.pblues.sportsshop.model.Address;
 import com.pblues.sportsshop.model.User;
 import com.pblues.sportsshop.repository.AddressRepository;
@@ -17,7 +18,9 @@ public class AddressServiceImpl implements AddressService {
     private final UserRepository userRepository;
 
     @Override
-    public Address addAddress(Authentication auth, Address address, boolean defaultAddress) {
+    public Address addAddress(Authentication auth, AddressRequest addressRequest, boolean defaultAddress) {
+        Address address = mapperToAddress(addressRequest);
+
         User user = (User) auth.getPrincipal();
         address.setUser(user);
         address = addressRepository.save(address);
@@ -29,7 +32,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address updateAddress(Authentication auth, Long addressId, Address newAddress) {
+    public Address updateAddress(Authentication auth, Long addressId, AddressRequest newAddress) {
         User user = (User) auth.getPrincipal();
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new RuntimeException("Address not found"));
@@ -85,5 +88,24 @@ public class AddressServiceImpl implements AddressService {
             user.setDefaultAddress(address);
             userRepository.save(user);
         }
+    }
+
+    private Address mapperToAddress(AddressRequest addressRequest) {
+        Address address = new Address();
+        address.setFirstName(addressRequest.getFirstName());
+        address.setLastName(addressRequest.getLastName());
+        address.setPhone(addressRequest.getPhone());
+        address.setProvinceId(addressRequest.getProvinceId());
+        address.setProvinceName(addressRequest.getProvinceName());
+        address.setDistrictId(addressRequest.getDistrictId());
+        address.setDistrictName(addressRequest.getDistrictName());
+        address.setWardCode(addressRequest.getWardCode());
+        address.setWardName(addressRequest.getWardName());
+        address.setStreet(addressRequest.getStreet());
+        address.setNote(addressRequest.getNote());
+        address.setFullAddress(addressRequest.getFullAddress());
+        address.setLat(addressRequest.getLat());
+        address.setLng(addressRequest.getLng());
+        return address;
     }
 }

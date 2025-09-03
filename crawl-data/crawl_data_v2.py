@@ -148,7 +148,7 @@ def normalize_product(detail, category_slug):
     category_id = CATEGORY_MAPPING.get(category_slug, "507f1f77bcf86cd799439012")
 
     normalized = {
-        "_id": str(ObjectId()),
+        "_id":  {"$oid": str(ObjectId())},
         "slug": slug,
         "title": detail.get("title", ""),
         "description": detail.get("description", ""),

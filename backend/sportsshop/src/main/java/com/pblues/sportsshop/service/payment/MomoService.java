@@ -1,9 +1,9 @@
-package com.pblues.sportsshop.service.payment.momo;
+package com.pblues.sportsshop.service.payment;
 
+import com.pblues.sportsshop.client.MomoClient;
 import com.pblues.sportsshop.model.Order;
 import com.pblues.sportsshop.dto.request.CreatePaymentRequest;
 import com.pblues.sportsshop.dto.response.CreatePaymentResponse;
-import com.pblues.sportsshop.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class MomoService implements PaymentService {
     @Value(value = "${momo.request-type}")
     private String REQUEST_TYPE;
 
-    private final MomoApi momoApi;
+    private final MomoClient momoApi;
 
     private String signHmacSHA256(String data, String key) throws Exception {
         Mac hmacSha256 = Mac.getInstance("HmacSHA256");

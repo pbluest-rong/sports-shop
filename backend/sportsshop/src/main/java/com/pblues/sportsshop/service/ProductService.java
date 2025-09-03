@@ -23,4 +23,6 @@ public interface ProductService {
             int page,
             int size
     );
+
+    PageResponse<ProductResponse> vectorSearch(String query, int page, int size);
 }
