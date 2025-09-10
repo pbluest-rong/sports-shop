@@ -1,0 +1,26 @@
+[
+    {
+        "_id": {"$oid": "670f6c5d2f3e4b8a9c1f0463"},
+        "name": "Mặc Hằng Ngày",
+        "slug": "mac-hang-ngay",
+        "imageUrl": "",
+        "level": 1,
+        "order": 7,
+        "parentId": null,
+        "path": "/mac-hang-ngay",
+        "isActive": true,
+        "createdAt": {"$date": "2025-09-06T15:55:00Z"}
+    },
+    {
+        "_id": {"$oid": "670f6c5d2f3e4b8a9c1f0464"},
+        "name": "Sale tới 50%",
+        "slug": "sale-toi-50-phan-tram",
+        "imageUrl": "",
+        "level": 1,
+        "order": 8,
+        "parentId": null,
+        "path": "/sale-toi-50-phan-tram",
+        "isActive": true,
+        "createdAt": {"$date": "2025-09-06T15:55:00Z"}
+    }
+]

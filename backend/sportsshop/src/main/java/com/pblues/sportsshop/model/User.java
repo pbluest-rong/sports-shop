@@ -1,6 +1,6 @@
 package com.pblues.sportsshop.model;
 
-import com.pblues.sportsshop.constant.Role;
+import com.pblues.sportsshop.common.constant.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

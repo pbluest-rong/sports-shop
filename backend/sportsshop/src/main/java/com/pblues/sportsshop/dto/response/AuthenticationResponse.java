@@ -1,6 +1,6 @@
 package com.pblues.sportsshop.dto.response;
 
-import com.pblues.sportsshop.constant.Role;
+import com.pblues.sportsshop.common.constant.Role;
 import lombok.Builder;
 import lombok.Data;
 

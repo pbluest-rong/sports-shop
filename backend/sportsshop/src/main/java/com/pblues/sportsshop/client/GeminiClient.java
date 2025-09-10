@@ -9,18 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.List;
-
 @FeignClient(name = "gemini", url = "https://generativelanguage.googleapis.com/v1beta")
 public interface GeminiClient {
 
-    @PostMapping("/models/embedding-001:embedContent")
+    @PostMapping(value = "/models/embedding-001:embedContent",
+            consumes = "application/json")
     EmbedContentResponse embedContent(@RequestBody EmbedContentRequest request,
-                                      @RequestHeader("x-goog-api-key") String apiKey,
-                                      @RequestHeader("Content-Type") String contentType);
+                                      @RequestHeader("x-goog-api-key") String apiKey);
 
-    @PostMapping("/models/gemini-embedding-001:batchEmbedContents")
+    @PostMapping(value = "/models/gemini-embedding-001:batchEmbedContents",
+            consumes = "application/json")
     EmbedListContentResponse embedContents(@RequestBody EmbedListContentRequest request,
-                                           @RequestHeader("x-goog-api-key") String apiKey,
-                                           @RequestHeader("Content-Type") String contentType);
+                                           @RequestHeader("x-goog-api-key") String apiKey);
 }

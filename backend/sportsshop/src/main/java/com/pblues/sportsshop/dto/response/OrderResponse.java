@@ -1,8 +1,8 @@
 package com.pblues.sportsshop.dto.response;
 
-import com.pblues.sportsshop.constant.OrderStatus;
-import com.pblues.sportsshop.constant.PaymentMethod;
-import com.pblues.sportsshop.constant.ShippingMethod;
+import com.pblues.sportsshop.common.constant.OrderStatus;
+import com.pblues.sportsshop.common.constant.PaymentMethod;
+import com.pblues.sportsshop.common.constant.ShippingMethod;
 import com.pblues.sportsshop.model.Order;
 import com.pblues.sportsshop.model.OrderItem;
 import lombok.*;

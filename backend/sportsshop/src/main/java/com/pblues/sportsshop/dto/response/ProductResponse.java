@@ -20,10 +20,7 @@ public class ProductResponse {
     private String brand;
     private String categoryId;
     private String mainImage;
-    private String description;
-    private Map<String, List<String>> attributes;
-    private List<VariantResponse> variants;
+    private String shortDescription;
+    private VariantResponse firstVariant;
     private Rating rating;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

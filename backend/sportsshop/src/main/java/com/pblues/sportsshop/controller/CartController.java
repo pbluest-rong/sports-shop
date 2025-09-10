@@ -3,7 +3,7 @@ package com.pblues.sportsshop.controller;
 import com.pblues.sportsshop.dto.request.AddCartItemRequest;
 import com.pblues.sportsshop.dto.response.ApiResponse;
 import com.pblues.sportsshop.dto.response.CartResponse;
-import com.pblues.sportsshop.service.CartService;
+import com.pblues.sportsshop.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

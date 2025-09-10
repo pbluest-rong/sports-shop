@@ -12,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,11 +29,19 @@ public class Product {
     @Indexed(unique = true)
     private String slug;
     private String title;
-    private String description;
+    private String shortDescription;
+    private String longDescription;
     private String brand;
     private ProductStatus status;
     private int sold;
+
+    @Field("categoryId")
+    @Indexed
     private ObjectId categoryId;
+
+    @Field("ancestorIds")
+    @Indexed
+    private List<ObjectId> ancestorIds;
 
     private Map<String, List<String>> attributes;
 

@@ -10,10 +10,4 @@ import lombok.NoArgsConstructor;
 public class ProductEvent {
     private String productId;
     private ProductEventAction action;
-
-    enum ProductEventAction {
-        CREATE,
-        UPDATE,
-        DELETE
-    }
 }

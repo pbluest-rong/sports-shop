@@ -1,7 +1,7 @@
 package com.pblues.sportsshop.dto.request;
 
-import com.pblues.sportsshop.constant.PaymentMethod;
-import com.pblues.sportsshop.constant.ShippingMethod;
+import com.pblues.sportsshop.common.constant.PaymentMethod;
+import com.pblues.sportsshop.common.constant.ShippingMethod;
 import lombok.Data;
 
 import java.math.BigDecimal;

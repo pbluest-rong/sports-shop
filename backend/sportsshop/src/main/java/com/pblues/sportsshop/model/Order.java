@@ -1,9 +1,9 @@
 package com.pblues.sportsshop.model;
 
 
-import com.pblues.sportsshop.constant.OrderStatus;
-import com.pblues.sportsshop.constant.PaymentMethod;
-import com.pblues.sportsshop.constant.ShippingMethod;
+import com.pblues.sportsshop.common.constant.OrderStatus;
+import com.pblues.sportsshop.common.constant.PaymentMethod;
+import com.pblues.sportsshop.common.constant.ShippingMethod;
 import jakarta.persistence.*;
 import lombok.*;
 

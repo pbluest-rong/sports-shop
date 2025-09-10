@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ProductCustomRepository {
-
     private final MongoTemplate mongoTemplate;
 
     public ProductCustomRepository(MongoTemplate mongoTemplate) {

@@ -3,7 +3,7 @@ package com.pblues.sportsshop.controller;
 import com.pblues.sportsshop.dto.request.OrderRequest;
 import com.pblues.sportsshop.dto.response.ApiResponse;
 import com.pblues.sportsshop.dto.response.OrderCreationResponse;
-import com.pblues.sportsshop.service.OrderService;
+import com.pblues.sportsshop.service.order.OrderService;
 import com.pblues.sportsshop.dto.request.MomoIpnRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
