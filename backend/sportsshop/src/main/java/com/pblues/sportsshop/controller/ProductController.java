@@ -67,11 +67,11 @@ public class ProductController {
     }
 
     @GetMapping("/{slug}/variant")
-    public ResponseEntity<VariantSelectionResponse> getVariant(
+    public ResponseEntity<ApiResponse> getVariant(
             @PathVariable String slug,
             @RequestParam Map<String, Object> selectedAttributes) {
 
         VariantSelectionResponse response = productService.getVariantForSelection(slug, selectedAttributes);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(ApiResponse.success("success", response));
     }
 }

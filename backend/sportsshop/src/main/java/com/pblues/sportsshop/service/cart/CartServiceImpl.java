@@ -1,6 +1,7 @@
 package com.pblues.sportsshop.service.cart;
 
-import com.pblues.sportsshop.common.exception.ResourceNotFoundException;
+import com.pblues.sportsshop.common.constant.ErrorCode;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.model.Cart;
 import com.pblues.sportsshop.model.Inventory;
 import com.pblues.sportsshop.model.subdocument.CartItem;
@@ -39,9 +40,10 @@ public class CartServiceImpl implements CartService {
         User user = (User) auth.getPrincipal();
 
         Product product = productRepository.findById(new ObjectId(request.getProductId()))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(request.getSku())).findFirst().orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
+        Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(request.getSku())).findFirst().orElseThrow(() -> new
+                AppException(ErrorCode.VARIANT_NOT_FOUND));
 
         Inventory inventory = inventoryService.getInventoryByVariant(product.getId(), variant.getId());
 
@@ -63,12 +65,12 @@ public class CartServiceImpl implements CartService {
             CartItem existingItem = existingItemOpt.get();
             int itemQuantity = existingItem.getQuantity() + quantity;
             if (itemQuantity > inventory.getAvailableStock())
-                throw new ResourceNotFoundException("Quantity exceeds available stock");
+                throw new AppException(ErrorCode.QUANTITY_EXCEEDS_STOCK);
             existingItem.setQuantity(itemQuantity);
             cart.getItems().add(existingItem);
         } else {
             if (quantity > inventory.getQuantity())
-                throw new ResourceNotFoundException("Quantity exceeds available stock");
+                throw new AppException(ErrorCode.QUANTITY_EXCEEDS_STOCK);
 
             CartItem cartItem = new CartItem();
             cartItem.setProductId(request.getProductId());
@@ -83,12 +85,14 @@ public class CartServiceImpl implements CartService {
     public CartResponse getCart(Authentication auth) {
         User user = (User) auth.getPrincipal();
 
-        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
         Set<CartItemResponse> items = cart.getItems().stream().map(item -> {
-            Product product = productRepository.findById(new ObjectId(item.getProductId())).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+            Product product = productRepository.findById(new ObjectId(item.getProductId())).orElseThrow(() -> new
+                    AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-            Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(item.getSku())).findFirst().orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
+            Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(item.getSku())).findFirst().orElseThrow(() -> new
+                    AppException(ErrorCode.VARIANT_NOT_FOUND));
 
             Inventory inventory = inventoryService.getInventoryByVariant(product.getId(), variant.getId());
 
@@ -116,9 +120,10 @@ public class CartServiceImpl implements CartService {
 
         User user = (User) auth.getPrincipal();
 
-        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        CartItem item = cart.getItems().stream().filter(i -> i.getProductId().equals(productId) && i.getSku().equals(sku)).findFirst().orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
+        CartItem item = cart.getItems().stream().filter(i -> i.getProductId().equals(productId) && i.getSku().equals(sku)).findFirst().orElseThrow(() -> new
+                AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
         item.setQuantity(quantity);
 
@@ -129,12 +134,12 @@ public class CartServiceImpl implements CartService {
     public void removeItem(Authentication auth, String productId, String sku) {
         User user = (User) auth.getPrincipal();
 
-        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
         boolean removed = cart.getItems().removeIf(i -> i.getProductId().equals(productId) && i.getSku().equals(sku));
 
         if (!removed) {
-            throw new ResourceNotFoundException("Cart item not found");
+            throw new AppException(ErrorCode.RESOURCE_NOT_FOUND);
         }
 
         cartRepository.save(cart);
@@ -145,7 +150,7 @@ public class CartServiceImpl implements CartService {
         User user = (User) auth.getPrincipal();
 
         Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
         boolean removed = cart.getItems().removeIf(item ->
                 itemsToRemove.stream().anyMatch(toRemove ->
@@ -155,7 +160,7 @@ public class CartServiceImpl implements CartService {
         );
 
         if (!removed) {
-            throw new ResourceNotFoundException("No matching cart items found");
+            throw new AppException(ErrorCode.RESOURCE_NOT_FOUND);
         }
 
         cartRepository.save(cart);

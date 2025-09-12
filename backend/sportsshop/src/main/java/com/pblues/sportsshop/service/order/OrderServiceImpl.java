@@ -1,9 +1,9 @@
 package com.pblues.sportsshop.service.order;
 
+import com.pblues.sportsshop.common.constant.ErrorCode;
 import com.pblues.sportsshop.common.constant.OrderStatus;
 import com.pblues.sportsshop.common.constant.PaymentMethod;
-import com.pblues.sportsshop.common.exception.PriceChangedException;
-import com.pblues.sportsshop.common.exception.ResourceNotFoundException;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.model.*;
 import com.pblues.sportsshop.model.OrderItem;
 import com.pblues.sportsshop.model.subdocument.CartItem;
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderCreationResponse checkout(Authentication auth, OrderRequest request) {
         User user = (User) auth.getPrincipal();
-        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
 
         String orderId = OrderUtils.generateId();
         BigDecimal totalPrice = BigDecimal.ZERO;
@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
                 OrderStatus.AWAITING_PAYMENT;
 
         Address address = addressRepository.findById(request.getAddressId()).orElseThrow(
-                () -> new ResourceNotFoundException("Address not found")
+                () -> new AppException(ErrorCode.ADDRESS_NOT_FOUND)
         );
 
         BigDecimal deliveryFee = new BigDecimal(shippingService.calculateFee().getTotal());
@@ -80,12 +80,14 @@ public class OrderServiceImpl implements OrderService {
         Set<OrderItem> items = new HashSet<>();
         for (CartItem i : cart.getItems()) {
             if (request.getCartItemIds().contains(i.getId())) {
-                Product product = productRepository.findById(new ObjectId(i.getProductId())).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-                Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(i.getSku())).findFirst().orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
+                Product product = productRepository.findById(new ObjectId(i.getProductId())).orElseThrow(() -> new
+                        AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                Variant variant = product.getVariants().stream().filter(v -> v.getSku().equals(i.getSku())).findFirst().orElseThrow(() -> new
+                        AppException(ErrorCode.VARIANT_NOT_FOUND));
                 Inventory inventory = inventoryService.getInventoryByVariant(product.getId(), variant.getId());
                 // Check available quantity of variant >= quantity of order item
                 if (inventory.getAvailableStock() < i.getQuantity())
-                    throw new ResourceNotFoundException("Not enough stock");
+                    throw new AppException(ErrorCode.QUANTITY_EXCEEDS_STOCK);
                 // Reserved quantity
                 inventory.setReservedQuantity(inventory.getReservedQuantity() + i.getQuantity());
                 inventories.add(inventory);
@@ -106,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
         totalPrice = totalPrice.add(deliveryFee);
         // Check price
         if (totalPrice.compareTo(request.getTotalPrice()) != 0)
-            throw new PriceChangedException("Price was changed. Please try again");
+            throw new AppException(ErrorCode.PRICE_CHANGED);
 
         // Reserved quantity
         inventories.forEach(inventoryService::updateInventory);

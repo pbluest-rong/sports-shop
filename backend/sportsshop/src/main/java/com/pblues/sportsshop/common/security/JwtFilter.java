@@ -1,4 +1,4 @@
-package com.pblues.sportsshop.common.config.security;
+package com.pblues.sportsshop.common.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

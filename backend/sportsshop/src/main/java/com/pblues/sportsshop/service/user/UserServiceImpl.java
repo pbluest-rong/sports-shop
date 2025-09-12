@@ -1,6 +1,7 @@
 package com.pblues.sportsshop.service.user;
 
-import com.pblues.sportsshop.common.config.security.JwtService;
+import com.pblues.sportsshop.common.constant.ErrorCode;
+import com.pblues.sportsshop.common.security.JwtService;
 import com.pblues.sportsshop.common.constant.Role;
 import com.pblues.sportsshop.common.exception.*;
 import com.pblues.sportsshop.model.OTP;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public boolean isExistUser(String email) {
@@ -51,7 +56,7 @@ public class UserServiceImpl implements UserService {
         if (otp != null) {
             if (otp.getRequestCount() >= REQUEST_COUNT_MAX) {
                 if (!otp.getCreatedAt().toLocalDate().equals(LocalDate.now())) otp.setRequestCount(0);
-                else throw new OTPExceededLimitException("OTP limit exceeded. Please try again tomorrow.");
+                else throw new AppException(ErrorCode.OTP_EXCEEDED);
             }
             otp.setOtp(generatedToken);
             otp.setCreatedAt(LocalDateTime.now());
@@ -99,13 +104,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signup(SignupRequest request) {
         if (isExistUser(request.getEmail()))
-            throw new AlreadyExistsException("Email already exists");
+            throw new AppException(ErrorCode.ACCOUNT_ALREADY_EXISTS);
 
         OTP otp = otpRepository.findByEmail(request.getEmail())
-                .orElseThrow(InvalidOTPException::new);
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_OTP));
 
         if (otp.getExpiresAt().isBefore(LocalDateTime.now()) || !request.getOtp().equals(otp.getOtp())) {
-            throw new InvalidOTPException();
+            throw new AppException(ErrorCode.INVALID_OTP);
         }
         User user = new User();
         user.setEmail(request.getEmail());
@@ -119,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public Object[] login(AuthenticationRequest request) {
         try {
             var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -131,11 +136,10 @@ public class UserServiceImpl implements UserService {
             var user = (User) auth.getPrincipal();
 
             var jwtToken = jwtService.generateToken(claims, user);
-            var refreshToken = jwtService.generateRefreshToken(user);
 
-            return AuthenticationResponse.builder()
+            String refreshToken = jwtService.generateRefreshToken(user);
+            AuthenticationResponse response = AuthenticationResponse.builder()
                     .accessToken(jwtToken)
-                    .refreshToken(refreshToken)
                     .email(user.getEmail())
                     .fullName(user.getFullName())
                     .gender(user.getGender())
@@ -143,26 +147,53 @@ public class UserServiceImpl implements UserService {
                     .dob(user.getDob())
                     .role(user.getRole())
                     .build();
+            return new Object[]{refreshToken, response};
         } catch (BadCredentialsException ex) {
-            throw new InvalidCredentialsException("Bad credentials");
+            throw new AppException(ErrorCode.BAD_CREDENTIALS);
         } catch (LockedException ex) {
-            throw new AccountLockedException("User account is locked");
+            throw new AppException(ErrorCode.ACCOUNT_LOCKED);
         }
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
         if (!isExistUser(request.getEmail()))
-            throw new ResourceNotFoundException("Email doesn't exist");
+            throw new AppException(ErrorCode.ACCOUNT_NOT_FOUND);
 
         OTP otp = otpRepository.findByEmail(request.getEmail())
-                .orElseThrow(InvalidOTPException::new);
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_OTP));
 
         if (otp.getExpiresAt().isBefore(LocalDateTime.now()) || !request.getOtp().equals(otp.getOtp())) {
-            throw new InvalidOTPException();
+            throw new AppException(ErrorCode.INVALID_OTP);
         }
-        User user = new User();
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    public AuthenticationResponse getAccessToken(String refreshToken) {
+        String username = jwtService.extractUserName(refreshToken);
+        if (username != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            // Validate the refresh token
+            if (jwtService.isTokenValid(refreshToken, userDetails)) {
+                // Generate new access token
+                Map<String, Object> claims = new HashMap<>();
+                String newAccessToken = jwtService.generateToken(claims, userDetails);
+                User user = (User) userDetails;
+                return AuthenticationResponse.builder()
+                        .accessToken(newAccessToken)
+                        .email(user.getEmail())
+                        .fullName(user.getFullName())
+                        .gender(user.getGender())
+                        .phone(user.getPhone())
+                        .dob(user.getDob())
+                        .role(user.getRole())
+                        .build();
+            }
+        }
+        throw new AppException(ErrorCode.INVALID_TOKEN);
     }
 }

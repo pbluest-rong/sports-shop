@@ -1,10 +1,13 @@
 package com.pblues.sportsshop.controller;
 
+import com.cloudinary.Api;
+import com.pblues.sportsshop.dto.response.ApiResponse;
 import com.pblues.sportsshop.dto.response.CategoryResponse;
 import com.pblues.sportsshop.dto.response.SimpleCategoryResponse;
 import com.pblues.sportsshop.service.product.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,26 +19,32 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/root")
-    public List<CategoryResponse> getRootCategories() {
-        return categoryService.getRootCategories();
+    public ResponseEntity<ApiResponse> getRootCategories() {
+        List<CategoryResponse> categoryResponses = categoryService.getRootCategories();
+        return ResponseEntity.ok().body(ApiResponse.success("roots", categoryResponses));
     }
 
     @GetMapping("/{id}/children")
-    public List<CategoryResponse> getChildrenCategories(@PathVariable String id) {
-        return categoryService.getChildrenCategories(new ObjectId(id));
+    public ResponseEntity<ApiResponse> getChildrenCategories(@PathVariable String id) {
+        List<CategoryResponse> categoryResponses = categoryService.getChildrenCategories(new ObjectId(id));
+        return ResponseEntity.ok().body(ApiResponse.success("Success", categoryResponses));
     }
 
     @GetMapping("/{id}/descendants")
-    public List<CategoryResponse> getCategoryDescendants(@PathVariable String id) {
-        return categoryService.getCategoryDescendants(new ObjectId(id));
+    public ResponseEntity<ApiResponse> getCategoryDescendants(@PathVariable String id) {
+        List<CategoryResponse> categoryResponses = categoryService.getCategoryDescendants(new ObjectId(id));
+        return ResponseEntity.ok().body(ApiResponse.success("Success", categoryResponses));
     }
 
     @GetMapping("/{id}/ancestors")
-    public List<CategoryResponse> getCategoryAncestors(@PathVariable String id) {
-        return categoryService.getCategoryAncestors(new ObjectId(id));
+    public ResponseEntity<ApiResponse> getCategoryAncestors(@PathVariable String id) {
+        List<CategoryResponse> categoryResponses = categoryService.getCategoryAncestors(new ObjectId(id));
+        return ResponseEntity.ok().body(ApiResponse.success("category ancestors", categoryResponses));
     }
+
     @GetMapping("/sports")
-    public List<SimpleCategoryResponse> getSportCategories() {
-        return categoryService.getSportCategories();
+    public ResponseEntity<ApiResponse> getSportCategories() {
+        List<SimpleCategoryResponse> categoryResponses = categoryService.getSportCategories();
+        return ResponseEntity.ok().body(ApiResponse.success("sport categories", categoryResponses));
     }
 }

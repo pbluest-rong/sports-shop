@@ -17,7 +17,7 @@ public class ProductDetailResponse {
     private String title;
     private String slug;
     private String brand;
-    private String categoryId;
+    private List<BreadcrumbResponse> breadcrumbs;
     private String mainImage;
     private String shortDescription;
     private String longDescription;
@@ -26,3 +26,4 @@ public class ProductDetailResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
+

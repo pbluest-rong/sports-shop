@@ -32,14 +32,14 @@ public class ProductEmbeddingService {
      * Tạo embedding cho 1 product và lưu vào Qdrant
      */
     public void generateAndSaveEmbedding(Product product) {
-        String text = product.getTitle() + " " + product.getDescription();
+        String text = product.getTitle() + " " + product.getShortDescription();
         List<Double> embeddings = generateEmbedding(text);
 
         qdrantService.saveProductEmbedding(
                 product.getId().toHexString(),
                 embeddings,
                 product.getTitle(),
-                product.getDescription()
+                product.getShortDescription()
         );
     }
 
@@ -48,7 +48,7 @@ public class ProductEmbeddingService {
      */
     public void generateAndSaveEmbedding(List<Product> products) {
         List<String> textList = products.stream()
-                .map(p -> p.getTitle() + " " + p.getDescription())
+                .map(p -> p.getTitle() + " " + p.getShortDescription())
                 .collect(Collectors.toList());
 
         EmbedListContentResponse embedListContentResponse = generateEmbeddings(textList);
@@ -61,7 +61,7 @@ public class ProductEmbeddingService {
                     p.getId().toHexString(),
                     vector,
                     p.getTitle(),
-                    p.getDescription()
+                    p.getShortDescription()
             );
         }
     }

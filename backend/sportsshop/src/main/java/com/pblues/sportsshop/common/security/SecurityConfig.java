@@ -1,4 +1,4 @@
-package com.pblues.sportsshop.common.config.security;
+package com.pblues.sportsshop.common.security;
 
 import com.pblues.sportsshop.common.constant.Role;
 import lombok.RequiredArgsConstructor;

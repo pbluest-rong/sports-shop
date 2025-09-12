@@ -1,8 +1,7 @@
-package com.pblues.sportsshop.common.config.security;
+package com.pblues.sportsshop.common.security;
 
-import com.pblues.sportsshop.common.exception.AccountLockedException;
-import com.pblues.sportsshop.common.exception.InvalidTokenException;
-import com.pblues.sportsshop.common.exception.OperationNotPermittedException;
+import com.pblues.sportsshop.common.constant.ErrorCode;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -64,20 +63,17 @@ public class JwtService {
         try {
             final String username = extractUserName(token);
             if (!username.equals(userDetails.getUsername())) {
-                throw new OperationNotPermittedException("Token username does not match the authenticated user");
+                throw new AppException(ErrorCode.OPERATION_NOT_PERMITTED);
             }
             if (isTokenExpired(token)) {
-                throw new OperationNotPermittedException("Token has expired");
-            }
-            if (!userDetails.isEnabled()) {
-                throw new OperationNotPermittedException("User account is disabled");
+                throw new AppException(ErrorCode.INVALID_TOKEN);
             }
             if (!userDetails.isAccountNonLocked()) {
-                throw new AccountLockedException("User account is locked");
+                throw new AppException(ErrorCode.ACCOUNT_LOCKED);
             }
             return true;
         } catch (ExpiredJwtException ex) {
-            throw new OperationNotPermittedException("JWT token is expired. Please log in again");
+            throw new AppException(ErrorCode.INVALID_TOKEN);
         }
     }
 
@@ -93,7 +89,7 @@ public class JwtService {
         try {
             return extractClaim(token, Claims::getSubject);
         } catch (ExpiredJwtException e) {
-            throw new InvalidTokenException("");
+            throw new AppException(ErrorCode.INVALID_TOKEN);
         }
     }
 

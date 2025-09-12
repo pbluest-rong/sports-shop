@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Builder
 public class AuthenticationResponse {
     private String accessToken;
-    private String refreshToken;
     private String email;
     private String fullName;
     private Boolean gender;

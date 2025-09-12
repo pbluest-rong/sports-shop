@@ -12,7 +12,9 @@ public interface UserService {
 
     void signup(SignupRequest request);
 
-    AuthenticationResponse login(AuthenticationRequest request);
+    Object[] login(AuthenticationRequest request);
 
     void resetPassword(ResetPasswordRequest request);
+
+    AuthenticationResponse getAccessToken(String refreshToken);
 }

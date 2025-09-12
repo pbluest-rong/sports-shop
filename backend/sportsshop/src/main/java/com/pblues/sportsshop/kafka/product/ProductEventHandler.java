@@ -1,9 +1,8 @@
 package com.pblues.sportsshop.kafka.product;
 
-import com.pblues.sportsshop.common.exception.ResourceNotFoundException;
-import com.pblues.sportsshop.model.Inventory;
+import com.pblues.sportsshop.common.constant.ErrorCode;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.model.Product;
-import com.pblues.sportsshop.model.subdocument.Variant;
 import com.pblues.sportsshop.repository.ProductRepository;
 import com.pblues.sportsshop.service.product.ProductEmbeddingService;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +25,13 @@ public class ProductEventHandler {
 
     private void handleCreate(String productId) {
         Product product = productRepository.findById(new ObjectId(productId))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         embeddingService.generateAndSaveEmbedding(product);
     }
 
     private void handleUpdate(String productId) {
         Product product = productRepository.findById(new ObjectId(productId))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() ->  new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         embeddingService.generateAndSaveEmbedding(product);
     }
 

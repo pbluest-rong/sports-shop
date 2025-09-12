@@ -1,6 +1,7 @@
 package com.pblues.sportsshop.service.inventory;
 
-import com.pblues.sportsshop.common.exception.ResourceNotFoundException;
+import com.pblues.sportsshop.common.constant.ErrorCode;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.model.Inventory;
 import com.pblues.sportsshop.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,8 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public Inventory getInventoryByVariant(ObjectId productId, String variantId) {
-        Inventory inventory =  inventoryRepository.findByProductIdAndVariantId(productId.toHexString(), variantId).orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
+        Inventory inventory =  inventoryRepository.findByProductIdAndVariantId(productId.toHexString(), variantId).orElseThrow(() -> new
+                AppException(ErrorCode.INVENTORY_NOT_FOUND));
         return inventory;
     }
 

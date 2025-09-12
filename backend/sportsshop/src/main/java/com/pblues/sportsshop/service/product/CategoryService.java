@@ -1,5 +1,7 @@
 package com.pblues.sportsshop.service.product;
 
+import com.pblues.sportsshop.common.constant.ErrorCode;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.dto.response.CategoryResponse;
 import com.pblues.sportsshop.dto.response.SimpleCategoryResponse;
 import com.pblues.sportsshop.model.Category;
@@ -121,11 +123,11 @@ public class CategoryService {
                 .toList();
     }
 
-    public Optional<CategoryResponse> getCategoryById(ObjectId id) {
+    public CategoryResponse getCategoryById(ObjectId id) {
         return categoryRepository.findById(id).map(child -> CategoryResponse.mapperToCategoryResponse(
                 child,
                 categoryRepository.findByParentIdAndIsActiveTrue(child.getId()).size() > 0
-        ));
+        )).orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
     public List<SimpleCategoryResponse> getSportCategories() {

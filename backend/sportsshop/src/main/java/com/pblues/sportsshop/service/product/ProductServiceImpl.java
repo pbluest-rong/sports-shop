@@ -1,8 +1,9 @@
 package com.pblues.sportsshop.service.product;
 
+import com.pblues.sportsshop.common.constant.ErrorCode;
 import com.pblues.sportsshop.common.constant.SortBy;
+import com.pblues.sportsshop.common.exception.AppException;
 import com.pblues.sportsshop.dto.response.*;
-import com.pblues.sportsshop.common.exception.ResourceNotFoundException;
 import com.pblues.sportsshop.model.Category;
 import com.pblues.sportsshop.model.Inventory;
 import com.pblues.sportsshop.model.Product;
@@ -34,7 +35,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<ProductResponse> getProductsByCategoryPath(String categoryPath, int page, int size) {
-        Category category = categoryRepository.findByPathAndIsActiveTrue(categoryPath).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        Category category = categoryRepository.findByPathAndIsActiveTrue(categoryPath).orElseThrow(() -> new
+                AppException(ErrorCode.RESOURCE_NOT_FOUND));
         if (categoryRepository.existsByParentIdAndIsActiveTrue(category.getId())) {
             List<Category> categories = categoryRepository.findActiveDescendants(categoryPath);
 
@@ -248,13 +250,15 @@ public class ProductServiceImpl implements ProductService {
                 .defaultVariant(defaultVariant)
                 .build();
 
+        List<BreadcrumbResponse> breadcrumbs =  buildBreadcrumbs(product.getCategoryId());
+
         return ProductDetailResponse.builder()
                 .id(product.getId().toHexString())
                 .title(product.getTitle())
                 .mainImage(mainImage)
                 .slug(product.getSlug())
                 .brand(product.getBrand())
-                .categoryId(product.getCategoryId().toHexString())
+                .breadcrumbs(breadcrumbs)
                 .shortDescription(product.getShortDescription())
                 .longDescription(product.getLongDescription())
                 .variantInfo(variantResponse)
@@ -263,6 +267,20 @@ public class ProductServiceImpl implements ProductService {
                 .updatedAt(product.getUpdatedAt())
                 .build();
     }
+
+    private List<BreadcrumbResponse> buildBreadcrumbs(ObjectId categoryId) {
+        return categoryRepository.findByIdAndIsActiveTrue(categoryId)
+                .filter(cat -> cat.getPath() != null)
+                .map(cat -> Arrays.stream(cat.getPath().split("/"))
+                        .filter(s -> !s.isBlank())
+                        .map(slug -> categoryRepository.findBySlugAndIsActiveTrue(slug).orElse(null))
+                        .filter(Objects::nonNull)
+                        .map(child -> new BreadcrumbResponse(child.getName(), child.getPath()))
+                        .toList()
+                )
+                .orElse(List.of());
+    }
+
 
     private Pageable createPageable(int page, int size, SortBy sortBy) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
